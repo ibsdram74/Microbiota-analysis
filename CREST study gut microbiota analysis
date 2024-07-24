@@ -1,7 +1,7 @@
 R script for Co-occurrence network plot generation
 # Co-occurrence Network 
 require(igraph)
-file <- "C:\\Jeyaram.txt"  # Genus file
+file <- "C:\\File.txt"  # Genus file
 gr1.file <- "CYoung_family_0.1_r_0.4_p_0.01\2018.graphml"                                  
  # Ouput file
 Genus <- read.table(file,sep="\t",header=T,row.names=1) 
