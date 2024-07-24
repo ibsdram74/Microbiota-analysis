@@ -1,0 +1,27 @@
+R script for Co-occurrence network plot generation
+# Co-occurrence Network 
+require(igraph)
+file <- "C:\\Jeyaram.txt"  # Genus file
+gr1.file <- "CYoung_family_0.1_r_0.4_p_0.01\2018.graphml"                                  
+ # Ouput file
+Genus <- read.table(file,sep="\t",header=T,row.names=1) 
+#   Calcalute correlation (Spearman, log-transformed)
+correlations <- cor(t(lev2),method="spearman")
+write.csv(cor(t(lev2),method="spearman"),"Young_family_0.1_r_0.4_p0.01.csv") 
+#   r-theshold? or p-value calculated threshold? Based on the requirement.
+r.lim <- 0.4
+n <- 90                       # subjects number
+p.lim <- 0.001/90                  
+df.lim <- 90-2                    # degrees of freedom
+t.lim <- abs(qt(p.lim/2,df.lim))  # t-value (abs() is used to prevent negative numbers)
+R.lim <- sqrt((t.lim^2)/(t.lim^2 + df.lim)) # r-limit
+correlations <- as.matrix(correlations)
+diag(correlations)<-0
+graphA <- graph.adjacency(abs(correlations)> r.lim, # Use only correlations above threshold
+                          diag=FALSE, weighted=TRUE,
+                          mode="upper") 
+E(graphA)$weight <- correlations[lower.tri(correlations)][abs(correlations[lower.tri(correlations)])> r.lim]
+V(graphA)$label<- colnames(correlations)
+plot(graphA) # in R 
+write.graph(graphA,gr1.file, format="graphml")
+min(correlations)
